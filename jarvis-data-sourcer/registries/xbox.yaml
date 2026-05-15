@@ -1,0 +1,97 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Xbox
+
+topic: "Xbox"
+description: "Xbox console updates, Game Pass, Xbox Series X|S, Bethesda, Microsoft Gaming, hardware"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Microsoft Gaming (Xbox division)"
+source_types_to_discover:
+  - type: "official_blog"
+    search_queries: ["Xbox Wire RSS"]
+    expected_url_pattern: "news.xbox.com"
+    rss_feed: "news.xbox.com/en-us/feed"
+    verified: true
+    notes: "Xbox Wire is the official Xbox blog; RSS should be available â€” verify exact URL"
+
+  - type: "news_hub"
+    search_queries: ["Xbox news"]
+    expected_url_pattern: "news.xbox.com/en-us"
+    verified: true
+    notes: "Xbox Wire in English; also available in Japanese and other languages"
+
+  - type: "game_pass_news"
+    search_queries: ["Xbox Game Pass updates RSS"]
+    expected_url_pattern: "news.xbox.com/en-us/tag/xbox-game-pass"
+    notes: "Game Pass additions/removals are a key update category"
+
+  - type: "youtube"
+    channels: ["Xbox"]
+    verified: true
+    notes: "Official Xbox YouTube channel for showcases and trailers"
+
+  - type: "twitter/x"
+    handles: ["@Xbox", "@XboxGamePass"]
+    verified: true
+
+  - type: "developer_docs"
+    expected_url_pattern: "developer.microsoft.com/games"
+    search_queries: ["Xbox developer documentation"]
+
+  - type: "news_outlets"
+    outlets: ["Pure Xbox", "Windows Central Xbox", "Eurogamer Xbox", "TrueAchievements"]
+    rss_feeds: ["purexbox.com/rss", "windowscentral.com/rss", "eurogamer.net/feed"]
+
+  - type: "reddit_community"
+    subreddits: ["r/xbox", "r/XboxSeriesX", "r/XboxGamePass"]
+    rss_available: true
+
+  - type: "newsletter"
+    newsletters: ["Xbox Wire Newsletter"]
+
+  - type: "events"
+    search_queries: ["Xbox showcase dates"]
+    notes: "Xbox holds showcases (Developer_Direct, Partner Preview, Games Showcase); dates announced on Xbox Wire"
+
+status: "needs_verification"
+notes: |
+  Xbox Wire (news.xbox.com) is the primary official source.
+  RSS feed is expected but the exact URL needs verification.
+  Try: news.xbox.com/en-us/feed or check the page source for alternate links.
+  Xbox is a Microsoft division â€” some updates may appear on blogs.microsoft.com.
+  Microsoft Gaming CEO (Phil Spencer, Sarah Bond) statements on X are newsworthy.
+  Third-party specialist Xbox press (Pure Xbox, Windows Central) has strong RSS coverage.
+  YouTube showcases are major news events; subscribe to channel RSS.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

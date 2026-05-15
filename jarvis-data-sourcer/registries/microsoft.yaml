@@ -1,0 +1,118 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Microsoft
+
+topic: "Microsoft"
+description: "Microsoft product updates, AI/Copilot news, Azure, Windows, Xbox, Surface, earnings"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Microsoft Corporation"
+source_types_to_discover:
+  - type: "official_blog"
+    search_queries: ["Microsoft blog RSS", "Microsoft official blog"]
+    expected_url_pattern: "blogs.microsoft.com"
+    verified: true
+    notes: "Main Microsoft blog; covers company-wide announcements"
+
+  - type: "ai_blog"
+    search_queries: ["Microsoft AI blog RSS"]
+    expected_url_pattern: "blogs.microsoft.com/ai"
+    rss_feed: "blogs.microsoft.com/ai/feed"
+    verified: true
+    notes: "Dedicated AI blog with WordPress RSS feed"
+
+  - type: "news_hub"
+    search_queries: ["Microsoft news hub"]
+    expected_url_pattern: "news.microsoft.com"
+    verified: true
+    notes: "Official news aggregation hub"
+
+  - type: "tech_community_blog"
+    search_queries: ["Microsoft TechCommunity blog"]
+    expected_url_pattern: "techcommunity.microsoft.com"
+    notes: "Community + official blogs; may have RSS"
+
+  - type: "azure_blog"
+    search_queries: ["Azure blog RSS"]
+    expected_url_pattern: "azure.microsoft.com/blog"
+    notes: "Azure-specific updates; check for RSS"
+
+  - type: "developer_docs"
+    expected_url_pattern: "learn.microsoft.com"
+    search_queries: ["Microsoft Learn what's new"]
+    verified: true
+
+  - type: "github_releases"
+    repos: ["microsoft/vscode", "microsoft/TypeScript", "microsoft/DeepSpeed"]
+    expected_url_pattern: "github.com/microsoft"
+    verified: true
+    notes: "Microsoft GitHub org is one of the largest on the platform"
+
+  - type: "youtube"
+    channels: ["Microsoft"]
+    verified: true
+
+  - type: "twitter/x"
+    handles: ["@Microsoft", "@MSFTAzure", "@MicrosoftAI"]
+    verified: true
+
+  - type: "news_outlets"
+    outlets: ["The Verge Microsoft", "Ars Technica Microsoft", "Windows Central", "Thurrott.com"]
+    rss_feeds: ["theverge.com/microsoft/rss", "windowscentral.com/rss"]
+
+  - type: "reddit_community"
+    subreddits: ["r/microsoft", "r/Windows11"]
+    rss_available: true
+
+  - type: "newsletter"
+    newsletters: ["Microsoft Weekly (Thurrott)", "Windows Intelligence"]
+
+  - type: "source_blog"
+    search_queries: ["Microsoft Source blog"]
+    expected_url_pattern: "news.microsoft.com/source"
+    rss_feed: "news.microsoft.com/source/topics/ai/feed"
+    verified: true
+    notes: "Microsoft Source is the enterprise/IT pro news hub with topic-specific RSS feeds"
+
+status: "partially_verified"
+notes: |
+  Microsoft has a distributed blog ecosystem:
+  - blogs.microsoft.com (main corporate blog)
+  - blogs.microsoft.com/ai (AI-specific, with RSS)
+  - news.microsoft.com/source (enterprise news with topic RSS feeds)
+  - techcommunity.microsoft.com (community + official)
+  - azure.microsoft.com/blog (Azure specific)
+  GitHub org "microsoft" confirmed â€” thousands of public repos.
+  X/Twitter handles verified for @Microsoft, @MSFTAzure, @MicrosoftAI.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

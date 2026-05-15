@@ -1,0 +1,55 @@
+# Quality blacklist — operator-controlled domain denylist with score caps and auto-block rules.
+# Referenced by `references/quality-scoring.md` D8.2 (Blacklist Override) and
+# `references/security.md` §8.3 (Blocklist Categories) and §8.4 (Auto-Block Triggers).
+#
+# This file is INTENTIONALLY operator-customizable. The categories below are
+# baseline categories; operators MUST review and curate the specific domains
+# for their context. Entries left empty mean "operator must populate".
+
+last_verified: "2026-05-14"
+
+# Hard blacklist: cap final_score at 20 (Tier 5 = rejected)
+blacklist:
+  domains: []           # Exact domains, e.g. "example-spam.com"
+  domain_patterns: []   # Regex patterns, e.g. "^.*-review-.*\\.com$"
+
+# Spam blacklist: force final_score to 0
+spam_blacklist:
+  domains: []           # Known spam / misinformation domains
+  auto_populate_from_factcheckers: true
+  factchecker_sources:
+    - snopes.com
+    - politifact.com
+    - factcheck.org
+
+# Category-based permanent blocks (security.md §8.3).
+# Entries here are reasons to refuse a source at registration time.
+category_blocks:
+  - { category: "X/Twitter HTML",    pattern: "(?i)\\b(twitter|x)\\.com\\b",       reason: "ToS prohibits scraping" }
+  - { category: "Facebook/Instagram", pattern: "(?i)\\b(facebook|instagram)\\.com\\b", reason: "PII risk and ToS" }
+  - { category: "TikTok",            pattern: "(?i)\\btiktok\\.com\\b",            reason: "ToS and PII" }
+  - { category: "Adult content",     pattern: "",                                  reason: "Out of scope; operator-specific list" }
+  - { category: "Gambling",          pattern: "",                                  reason: "Out of scope" }
+  - { category: "Illegal content",   pattern: "",                                  reason: "Strictly excluded" }
+  # Reddit/Twitter exceptions:
+  # - reddit.com/r/<sub>.rss is ALLOWED per the reconciled rules in security.md §8.3
+  # - X official paid API is ALLOWED if operator has paid access; HTML scraping NEVER
+
+# Auto-block rules (security.md §8.4). These trigger automatically; no manual
+# review needed unless escalated.
+auto_block_rules:
+  - { id: "consecutive_failures", threshold: 3, window_hours: 24, action: "block_temp", duration_hours: 24, escalate_to: "block_perm_after_3_temp" }
+  - { id: "robots_txt_disallow",  threshold: 1,                action: "block_perm",   reason: "robots.txt violation" }
+  - { id: "http_403",             threshold: 2, window_hours: 1, action: "block_temp", duration_hours: 48, escalate_to: "block_perm_after_2_temp" }
+  - { id: "http_451",             threshold: 1,                action: "block_perm",   reason: "Unavailable for legal reasons" }
+  - { id: "rate_limit_429",       threshold: 5, window_hours: 1, action: "block_temp", duration_hours: 24 }
+  - { id: "tos_violation_detected", threshold: 1,              action: "block_perm",   reason: "Terms of service violation" }
+  # PII handling — per the v3 patch (S8): redact-and-continue, NOT block.
+  - { id: "pii_detected",         threshold: 1,                action: "redact_and_continue", reason: "PII redaction applied per pii_filter.py; source not blocked" }
+  - { id: "pii_detected_persistent", threshold: 10, window_days: 7, action: "review_required", reason: "Persistent PII; manual review required" }
+  - { id: "content_quality_low",  threshold: 5, window_days: 7, action: "review_required", min_quality_score: 0.3 }
+
+# Auto-blacklist triggers (move to blacklist permanently)
+auto_blacklist_triggers:
+  - { id: "tier5_majority",    threshold_pct: 70, window_days: 30, action: "add_to_blacklist" }
+  - { id: "factchecker_flags", threshold: 2,                       action: "add_to_blacklist" }

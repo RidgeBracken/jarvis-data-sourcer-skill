@@ -1,0 +1,105 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Apple
+
+topic: "Apple"
+description: "Apple product announcements, iOS/macOS updates, AI/ML features, earnings, events"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Apple Inc."
+source_types_to_discover:
+  - type: "newsroom"
+    search_queries: ["Apple newsroom RSS"]
+    expected_url_pattern: "apple.com/newsroom"
+    rss_feed: "apple.com/newsroom/rss-feed.rss"
+    verified: true
+    notes: "Official newsroom with RSS; primary source for product announcements"
+
+  - type: "developer_news"
+    search_queries: ["Apple developer news RSS"]
+    expected_url_pattern: "developer.apple.com/news"
+    rss_feed: "developer.apple.com/news/rss"
+    verified: true
+    notes: "Developer-focused news and updates with RSS"
+
+  - type: "security_blog"
+    search_queries: ["Apple security blog"]
+    expected_url_pattern: "security.apple.com/blog"
+    notes: "Security research blog; check for RSS"
+
+  - type: "rss_directory"
+    expected_url_pattern: "apple.com/rss"
+    verified: true
+    notes: "Apple maintains an RSS directory page listing all available feeds"
+
+  - type: "youtube"
+    channels: ["Apple"]
+    verified: true
+    notes: "Official Apple YouTube channel for keynotes and ads"
+
+  - type: "twitter/x"
+    handles: ["@Apple"]
+    verified: true
+
+  - type: "investor_relations"
+    expected_url_pattern: "investor.apple.com"
+    search_queries: ["Apple investor relations RSS"]
+    notes: "Earnings calls, SEC filings; may have email alerts"
+
+  - type: "news_outlets"
+    outlets: ["MacRumors", "9to5Mac", "AppleInsider", "Daring Fireball", "Ars Technica Apple"]
+    rss_feeds: ["macrumors.com/feed", "9to5mac.com/feed", "appleinsider.com/rss"]
+    verified: true
+    notes: "Apple specialist press; all have confirmed RSS feeds"
+
+  - type: "reddit_community"
+    subreddits: ["r/apple", "r/ios", "r/mac"]
+    rss_available: true
+
+  - type: "newsletter"
+    newsletters: ["MacStories", "Daring Fireball"]
+    notes: "MacStories and Daring Fireball are prominent Apple-focused newsletters with RSS"
+
+status: "partially_verified"
+notes: |
+  Apple's RSS ecosystem is well-organised:
+  - apple.com/newsroom/rss-feed.rss (CONFIRMED â€” main newsroom feed)
+  - developer.apple.com/news/rss (CONFIRMED â€” developer news)
+  - apple.com/rss (CONFIRMED â€” RSS directory page listing all feeds)
+  Apple does NOT have a traditional blog. The Newsroom IS their blog equivalent.
+  Security blog at security.apple.com/blog may be separate.
+  Third-party Apple press (MacRumors, 9to5Mac, AppleInsider) all have RSS and are
+  extremely reliable â€” sometimes more timely than Apple's official channels.
+  YouTube channel confirmed for keynotes and promotional videos.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

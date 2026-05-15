@@ -1,0 +1,127 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: World News
+
+topic: "World News"
+description: "Global breaking news, international politics, conflicts, diplomacy, major events"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Multiple: Reuters, AP, BBC, AFP, DW, etc."
+source_types_to_discover:
+  - type: "news_wire"
+    search_queries: ["Reuters RSS feed", "AP News RSS", "BBC News RSS"]
+    expected_url_patterns:
+      - "reuters.com/world/rss"
+      - "apnews.com/rss"
+      - "feeds.bbci.co.uk/news/rss.xml"
+    verified: true
+    notes: "All major wire services have RSS feeds; these are PRIMARY sources"
+
+  - type: "international_broadcaster"
+    outlets: ["BBC News", "Al Jazeera", "France 24", "DW News", "CNA (Singapore)"]
+    rss_feeds:
+      - "feeds.bbci.co.uk/news/world/rss.xml"
+      - "aljazeera.com/xml/rss/all.xml"
+      - "france24.com/en/rss"
+      - "dw.com/en/top-stories/s-9097"
+    verified: true
+    notes: "International broadcasters with global perspective; all have RSS"
+
+  - type: "news_wire_detailed"
+    search_queries: ["Reuters world news RSS", "AP world news RSS"]
+    expected_url_patterns:
+      - "reuters.com/world"
+      - "apnews.com/hub/world-news"
+    notes: "Reuters and AP have topic-specific RSS feeds"
+
+  - type: "aggregators"
+    search_queries: ["Google News RSS", "Apple News RSS"]
+    expected_url_patterns:
+      - "news.google.com/rss"
+    notes: "Google News has an RSS endpoint; useful for keyword-based feeds"
+
+  - type: "no_paywall_sources"
+    search_queries: ["news organizations without paywall RSS"]
+    sources:
+      - "BBC News: feeds.bbci.co.uk/news/rss.xml"
+      - "Reuters: reuters.com"
+      - "Al Jazeera: aljazeera.com/xml/rss/all.xml"
+      - "AP News: apnews.com"
+      - "DW News: dw.com"
+      - "France 24: france24.com/en/rss"
+      - "The Guardian (registration): theguardian.com/rss"
+    verified: true
+    notes: "These sources do not have hard paywalls; RSS content is accessible"
+
+  - type: "youtube"
+    channels: ["BBC News", "Al Jazeera English", "DW News", "FRANCE 24 English"]
+    verified: true
+    notes: "News channels on YouTube for video coverage"
+
+  - type: "twitter/x"
+    handles: ["@Reuters", "@AP", "@BBCWorld", "@BBCBreaking"]
+    verified: true
+    notes: "Breaking news accounts; high signal-to-noise for major events"
+
+  - type: "reddit_community"
+    subreddits: ["r/worldnews", "r/news", "r/internationalnews"]
+    rss_available: true
+
+  - type: "newsletter"
+    newsletters: ["Reuters Daily Briefing", "BBC News Daily"]
+    notes: "Many wire services offer daily email digests"
+
+  - type: "specialised_topics"
+    search_queries: ["UN news RSS", "World Bank news RSS"]
+    expected_url_patterns:
+      - "un.org/rss"
+      - "worldbank.org/en/news"
+    notes: "International organisation news for policy/diplomatic coverage"
+
+status: "partially_verified"
+notes: |
+  World news is the MOST RSS-friendly topic in this registry:
+  - Reuters, AP, BBC all have well-maintained RSS feeds (CONFIRMED)
+  - Al Jazeera, France 24, DW all have RSS (CONFIRMED)
+  - No paywall on these sources makes them ideal for automated scraping
+  - Google News RSS can be used for keyword-based custom feeds:
+    news.google.com/rss/search?q={keyword}
+  - Reddit r/worldnews is a major community source
+  - For breaking news, @BBCBreaking and @Reuters on X are fastest
+  Avoid: paywalled sources (NYT, WaPo) for automated feeds unless you
+  have subscription access. Guardian RSS is free but requires free registration.
+  Consider filtering: world news volume is extremely high.
+  Recommend filtering by region (Americas, Europe, Asia, Middle East)
+  or topic (conflict, diplomacy, economics) using feed subsets.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

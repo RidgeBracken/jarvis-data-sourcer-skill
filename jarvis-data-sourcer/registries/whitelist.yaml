@@ -1,0 +1,53 @@
+# Quality whitelist — operator-controlled domain allowlist with score floors.
+# Referenced by `references/quality-scoring.md` D8.1 (Whitelist Override) and
+# `references/security.md` §8.2 (Initial Allowlist).
+#
+# This file is INTENTIONALLY operator-customizable. The defaults below are
+# the original Jarvis HQ deployment's allowlist. Add or remove domains based
+# on your topic mix; review at least annually.
+#
+# Semantics:
+#   premium: Tier 1 floor (final_score >= 92). Auto-include with notification.
+#   standard: Tier 2 floor (final_score >= 85). Standard digest inclusion.
+#
+# Each entry should include:
+#   domain        - exact hostname (no path, no scheme)
+#   reason        - one-line justification
+#   reviewed_by   - admin or operator handle
+#   added_at      - YYYY-MM-DD
+#   review_due    - YYYY-MM-DD (typically +12 months)
+
+last_verified: "2026-05-14"
+
+premium:
+  - { domain: "blog.google",           reason: "Official Google AI/Cloud/DeepMind blog",        reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "cloudflare.com",        reason: "Official Cloudflare blog with primary research", reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "github.blog",           reason: "Official GitHub engineering and product blog",  reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "aws.amazon.com",        reason: "AWS official blogs (subdomain /blogs/)",        reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "anthropic.com",         reason: "Anthropic official news + research",            reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "openai.com",            reason: "OpenAI official news + research",               reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "deepmind.google",       reason: "Google DeepMind blog",                          reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+
+standard:
+  - { domain: "arstechnica.com",       reason: "Tier-2 outlet, est. 1998, strong tech editorial", reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "theregister.com",       reason: "Tier-2 outlet, deep technical analysis",          reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "lwn.net",               reason: "Linux/open-source specialist, high signal",       reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "danluu.com",            reason: "Named individual expert, technical writing",      reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "reuters.com",           reason: "Tier-1 wire service",                             reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "apnews.com",            reason: "Tier-1 wire service",                             reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "bbc.com",               reason: "Tier-1 broadcaster",                              reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "arxiv.org",             reason: "Open preprint server",                            reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "techcrunch.com",        reason: "Tier-2 tech outlet",                              reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "theverge.com",          reason: "Tier-2 tech outlet",                              reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "wired.com",             reason: "Tier-2 outlet, strong feature writing",           reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "technologyreview.com",  reason: "MIT Tech Review",                                 reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "nature.com",            reason: "Peer-reviewed primary source",                    reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "distill.pub",           reason: "ML research with interactive visualizations",     reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "paperswithcode.com",    reason: "ML papers + code linkage",                        reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "huggingface.co",        reason: "HF blog + model cards",                           reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "pytorch.org",           reason: "Official PyTorch blog",                           reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+  - { domain: "microsoft.com",         reason: "Microsoft Research blog (research.microsoft.com)", reviewed_by: "admin", added_at: "2024-01-15", review_due: "2025-01-15" }
+
+# Annual review: any entry whose `review_due` is in the past should be re-evaluated.
+# Sources that drop below their floor's auto-computed score for 30 consecutive days
+# are flagged for review (see quality-scoring.md D8.1 governance).

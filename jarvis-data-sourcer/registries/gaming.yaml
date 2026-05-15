@@ -1,0 +1,108 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Gaming
+
+topic: "Gaming"
+description: "Video game industry news, releases, reviews, hardware, esports, industry trends"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Multiple: Sony (PlayStation), Microsoft (Xbox), Nintendo, Valve, Epic Games, etc."
+source_types_to_discover:
+  - type: "industry_news_site"
+    search_queries: ["IGN RSS feed", "Kotaku RSS", "Polygon RSS"]
+    expected_url_patterns:
+      - "ign.com/rss"
+      - "kotaku.com/rss"
+      - "polygon.com/rss"
+    verified: true
+    notes: "Major gaming outlets all have RSS feeds; IGN, Kotaku, Polygon confirmed"
+
+  - type: "industry_news_site_2"
+    outlets: ["GameSpot", "Eurogamer", "VG247", "PC Gamer", "Rock Paper Shotgun"]
+    rss_feeds:
+      - "gamespot.com/feeds/mashup"
+      - "eurogamer.net/feed"
+      - "vg247.com/feed"
+      - "pcgamer.com/rss"
+      - "rockpapershotgun.com/feed"
+    notes: "All major gaming sites have RSS; verify exact URLs"
+
+  - type: "platform_holders"
+    search_queries: ["PlayStation Blog RSS", "Nintendo news RSS"]
+    expected_url_patterns:
+      - "blog.playstation.com/feed"
+      - "nintendo.com/whatsnew"
+    notes: "Platform holder blogs are primary sources for exclusives"
+
+  - type: "game_awards"
+    search_queries: ["The Game Awards news"]
+    expected_url_pattern: "thegameawards.com"
+    notes: "Annual awards show; significant news source for announcements"
+
+  - type: "youtube"
+    channels: ["IGN", "GameSpot", "PlayStation", "Nintendo", "Xbox"]
+    verified: true
+
+  - type: "twitter/x"
+    handles: ["@IGN", "@GameSpot", "@Nibellion (defunct â€” find successor)"]
+    notes: "Nibellion was the premier gaming news aggregator; account is no longer active. Look for successor accounts."
+
+  - type: "reddit_community"
+    subreddits: ["r/games", "r/GamingLeaksAndRumours", "r/pcgaming"]
+    rss_available: true
+
+  - type: "esports"
+    search_queries: ["esports news RSS"]
+    expected_url_patterns:
+      - "esportsobserver.com/feed"
+      - "dexerto.com/esports/rss"
+    notes: "Esports is a sub-domain of gaming; may want separate tracking"
+
+  - type: "newsletter"
+    newsletters: ["GameDiscoverCo", "SuperJoost"]
+    notes: "Industry analysis newsletters for gaming business trends"
+
+status: "partially_verified"
+notes: |
+  Gaming news is a HIGH-VOLUME topic. Source strategy:
+  1. Primary: IGN + Polygon + Kotaku RSS (high volume, need filtering)
+  2. Platform-specific: PlayStation Blog, Xbox Wire, Nintendo News (lower volume, high relevance)
+  3. Industry: GameSpot, Eurogamer, VG247 (regional focus)
+  4. Community: r/games, r/GamingLeaksAndRumours
+  5. YouTube: Subscribe to channel RSS for showcases (Summer Game Fest, State of Play, Direct)
+  Nibellion (@Nibellion) on X/Twitter was the definitive gaming news aggregator
+  but the account is no longer active. No clear successor has emerged.
+  Consider using RSS aggregation + filtering instead.
+  Steam News RSS is available for specific games/curators.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

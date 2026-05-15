@@ -1,0 +1,110 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: UFC
+
+topic: "UFC"
+description: "UFC events, fight announcements, rankings, fighter news, PPV results, Dana White statements"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Ultimate Fighting Championship (TKO Group Holdings)"
+source_types_to_discover:
+  - type: "official_news"
+    search_queries: ["UFC news RSS", "UFC.com news feed"]
+    expected_url_pattern: "ufc.com/news"
+    notes: "UFC.com news section; RSS availability unknown â€” verify"
+
+  - type: "official_event_listings"
+    search_queries: ["UFC events schedule"]
+    expected_url_pattern: "ufc.com/events"
+    notes: "Event listings and fight cards; may have RSS â€” verify"
+
+  - type: "press_releases"
+    search_queries: ["UFC press releases RSS"]
+    expected_url_pattern: "ufc.com/press"
+    notes: "Press releases for major announcements; check for RSS"
+
+  - type: "rankings"
+    search_queries: ["UFC rankings RSS"]
+    expected_url_pattern: "ufc.com/rankings"
+    notes: "Updated after events; check if dynamic or RSS available"
+
+  - type: "youtube"
+    channels: ["UFC"]
+    verified: true
+    notes: "Fight highlights, Embedded series, weigh-ins, press conferences"
+
+  - type: "twitter/x"
+    handles: ["@ufc", "@danawhite", "@bokamotoESPN"]
+    notes: "@ufc official; @danawhite for announcements; @bokamotoESPN for breaking news"
+
+  - type: "news_outlets"
+    outlets: ["ESPN MMA", "MMA Junkie", "MMA Fighting", "Bloody Elbow", "Cageside Press"]
+    rss_feeds: ["espn.com/espn/rss/mma", "mmajunkie.com/news/feed", "mmafighting.com/rss.xml"]
+    notes: "MMA specialist press; ESPN is highest-profile mainstream coverage"
+
+  - type: "reddit_community"
+    subreddits: ["r/MMA", "r/ufc"]
+    rss_available: true
+
+  - type: "podcast"
+    source: "UFC Minute Podcast"
+    rss_feed: "media.ufc.tv/iTunes_podcasts/rss/ufc_minute_itunes_feed.rss"
+    verified: true
+    notes: "Official UFC podcast RSS; may be legacy â€” verify if still updated"
+
+  - type: "fighter_stats"
+    search_queries: ["UFC stats API"]
+    expected_url_pattern: "ufcstats.com"
+    notes: "Fight statistics; unofficial but widely used; check for API"
+
+  - type: "newsletter"
+    search_queries: ["UFC newsletter"]
+    expected_url_pattern: "ufc.com/newsletter"
+    notes: "UFC may offer email newsletter"
+
+status: "needs_verification"
+notes: |
+  UFC first-party RSS ecosystem is limited:
+  - ufc.com/news may not have RSS â€” must verify
+  - ufc.com/events has schedule data but likely no RSS
+  - Official podcast RSS exists but may be legacy
+  - YouTube is PRIMARY for video content (highlights, Embedded)
+  - X/Twitter (@ufc, @danawhite) for announcements
+  ESPN MMA is the highest-quality mainstream source.
+  MMA Junkie, MMA Fighting, Bloody Elbow are specialist press with RSS.
+  r/MMA is the largest combat sports community on Reddit.
+  Fighter announcements often break on Ariel Helwani (@arielhelwani) or
+  Brett Okamoto (@bokamotoESPN) X accounts before official channels.
+  Verify: ufc.com/news RSS, ufc.com/events RSS, podcast feed freshness.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

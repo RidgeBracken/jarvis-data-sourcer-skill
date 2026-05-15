@@ -1,0 +1,95 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: SpaceX
+
+topic: "SpaceX"
+description: "SpaceX launches, Starship development, Starlink, NASA partnerships, Elon Musk statements"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "SpaceX"
+source_types_to_discover:
+  - type: "updates_page"
+    search_queries: ["SpaceX updates RSS"]
+    expected_url_pattern: "spacex.com/updates"
+    notes: "SpaceX has an /updates page; RSS availability unknown â€” verify"
+
+  - type: "launches_page"
+    search_queries: ["SpaceX launches"]
+    expected_url_pattern: "spacex.com/launches"
+    notes: "Launch schedule and mission details; may not have RSS"
+
+  - type: "youtube"
+    channels: ["SpaceX"]
+    verified: true
+    notes: "Major source for launch livestreams and mission videos"
+
+  - type: "twitter/x"
+    handles: ["@SpaceX", "@elonmusk"]
+    verified: true
+    notes: "Primary real-time update channel for SpaceX"
+
+  - type: "news_outlets"
+    outlets: ["SpaceNews SpaceX", "NASASpaceFlight", "Teslarati SpaceX", "SpacePolicyOnline"]
+    rss_feeds: ["spacenews.com/tag/spacex/feed", "nasaspaceflight.com/?feed=spacex"]
+    verified: true
+    notes: "NASASpaceFlight and SpaceNews are essential specialist sources"
+
+  - type: "reddit_community"
+    subreddits: ["r/spacex", "r/SpaceXLounge"]
+    rss_available: true
+
+  - type: "nasa_source"
+    search_queries: ["NASA SpaceX blog RSS"]
+    expected_url_pattern: "blogs.nasa.gov/spacex"
+    rss_feed: "blogs.nasa.gov/spacex/feed"
+    verified: true
+    notes: "NASA blog for SpaceX partnership missions (Commercial Crew, HLS); RSS confirmed"
+
+  - type: "newsletter"
+    newsletters: ["SpaceNews Newsletter", "NASASpaceFlight Updates"]
+
+status: "needs_verification"
+notes: |
+  SpaceX has a MINIMAL first-party RSS ecosystem:
+  - /updates page exists but RSS is unconfirmed
+  - No obvious blog or press room with RSS
+  - PRIMARY sources are YouTube (launch streams) and X/Twitter (@SpaceX)
+  - NASA partnership blog at blogs.nasa.gov/spacex has RSS (CONFIRMED)
+  - Third-party specialist press is ESSENTIAL:
+    - NASASpaceFlight (leading technical source)
+    - SpaceNews (industry trade publication)
+    - Teslarati (broader coverage)
+  Must verify: spacex.com/updates RSS, spacex.com/launches RSS.
+  r/spacex has strict quality standards and is a good community signal.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

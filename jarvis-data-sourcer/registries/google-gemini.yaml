@@ -1,0 +1,115 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Google / Gemini
+
+topic: "Google / Gemini"
+description: "Google AI updates, Gemini model releases, DeepMind research, Google Cloud AI"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Google (Alphabet)"
+subsidiaries: ["Google DeepMind", "Google AI", "Google Cloud"]
+source_types_to_discover:
+  - type: "official_blog"
+    search_queries: ["Google AI blog", "Gemini updates"]
+    expected_url_pattern: "blog.google/innovation-and-ai"
+    rss_feed: "blog.google/rss"
+    verified: true
+    notes: "Main Google blog at blog.google with AI section; RSS confirmed active"
+
+  - type: "deepmind_blog"
+    search_queries: ["Google DeepMind blog RSS"]
+    expected_url_pattern: "deepmind.google/discover/blog"
+    verified: true
+    notes: "DeepMind has its own blog separate from main Google blog"
+
+  - type: "research_blog"
+    search_queries: ["Google Research blog RSS"]
+    expected_url_pattern: "research.google/blog"
+    rss_feed: "research.google/blog/rss"
+    verified: true
+    notes: "Academic research blog with RSS"
+
+  - type: "developers_blog"
+    search_queries: ["Google Developers blog"]
+    expected_url_pattern: "developers.googleblog.com"
+    rss_feed: null
+    verified: true
+    notes: "Developer-focused announcements; feed URL needs verification because the original draft had a truncated FeedBurner pattern"
+
+  - type: "google_cloud_blog"
+    search_queries: ["Google Cloud blog AI"]
+    expected_url_pattern: "cloud.google.com/blog"
+    rss_feed: "cloudblog.withgoogle.com/rss"
+    verified: true
+
+  - type: "changelog"
+    expected_url_pattern: "ai.google.dev/gemini-api/docs/changelog"
+    search_queries: ["Gemini API changelog"]
+    notes: "Gemini API changelog for developers"
+
+  - type: "github_releases"
+    repos: ["google/generative-ai-sdk-python", "google/gemma"]
+    expected_url_pattern: "github.com/google"
+    verified: true
+
+  - type: "youtube"
+    channels: ["Google", "Google DeepMind"]
+    search_queries: ["Google AI YouTube channel"]
+    verified: true
+
+  - type: "twitter/x"
+    handles: ["@GoogleAI", "@DeepMind", "@GeminiApp"]
+    verified: true
+
+  - type: "news_outlets"
+    outlets: ["TechCrunch Google AI", "The Verge Google", "9to5Google"]
+    rss_feeds: ["9to5google.com/feed"]
+
+  - type: "reddit_community"
+    subreddits: ["r/GoogleGeminiAI"]
+
+  - type: "newsletter"
+    newsletters: ["Import AI", "The Batch", "Last Week in AI"]
+
+status: "partially_verified"
+notes: |
+  Google has MULTIPLE official blogs â€” key ones:
+  - blog.google (main, with AI/Gemini section)
+  - deepmind.google/discover/blog (DeepMind specific)
+  - research.google/blog (research publications)
+  - developers.googleblog.com (developer tools)
+  - cloud.google.com/blog (cloud/enterprise AI)
+  Each has its own RSS feed. No single unified Google AI RSS exists.
+  GitHub org "google" is massive; focus on generative-ai-sdk-python and gemma repos.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

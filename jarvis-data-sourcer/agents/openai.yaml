@@ -1,0 +1,7 @@
+interface:
+  display_name: "Jarvis Data Sourcer"
+  short_description: "Find, score, and scrape public data sources"
+  default_prompt: "Use $jarvis-data-sourcer to discover and validate public sources for a topic, then return scored sources with safety notes."
+
+policy:
+  allow_implicit_invocation: true

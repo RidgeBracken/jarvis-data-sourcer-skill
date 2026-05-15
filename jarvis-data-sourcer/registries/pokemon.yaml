@@ -1,0 +1,108 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Pokemon
+
+topic: "Pokemon"
+description: "Pokemon game releases, TCG, Pokemon GO, anime, events, merchandise"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "The Pokemon Company International / Nintendo"
+source_types_to_discover:
+  - type: "press_site"
+    search_queries: ["Pokemon press site"]
+    expected_url_pattern: "pokemon.gamespress.com"
+    verified: true
+    notes: "The Pokemon Company International official press site; may have RSS â€” verify"
+
+  - type: "press_site_na"
+    search_queries: ["Pokemon press releases North America"]
+    expected_url_pattern: "press.pokemon.com"
+    verified: true
+    notes: "North America-specific press site"
+
+  - type: "official_youtube"
+    channels: ["Pokemon"]
+    expected_url_pattern: "youtube.com/@Pokemon"
+    verified: true
+    notes: "Official Pokemon YouTube channel; Pokemon Presents events streamed here"
+
+  - type: "twitter/x"
+    handles: ["@Pokemon", "@PokemonGoApp", "@PlayPokemon"]
+    verified: true
+    notes: "Multiple accounts for different aspects of the franchise"
+
+  - type: "pokemon_go_blog"
+    search_queries: ["Pokemon GO blog RSS"]
+    expected_url_pattern: "pokemongolive.com/post"
+    notes: "Pokemon GO has a dedicated blog at pokemongolive.com; may have RSS"
+
+  - type: "nintendo_news"
+    search_queries: ["Nintendo Pokemon news"]
+    expected_url_pattern: "nintendo.com/whatsnew/pokemon"
+    notes: "Nintendo publishes Pokemon game news on their official news channel"
+
+  - type: "tournament_updates"
+    search_queries: ["Pokemon World Championships news"]
+    expected_url_pattern: "pokemon.com/us/play-pokemon"
+    notes: "Play Pokemon series (TCG, VGC) tournament news"
+
+  - type: "news_outlets"
+    outlets: ["Serebii.net", "Bulbapedia", "Pokemon.com news"]
+    rss_feeds: ["serebii.net/rss.xml"]
+    notes: "Serebii.net is the leading Pokemon news source; check for RSS"
+
+  - type: "reddit_community"
+    subreddits: ["r/pokemon", "r/PokemonScarletViolet", "r/TheSilphRoad"]
+    rss_available: true
+
+  - type: "youtube"
+    channels: ["Pokemon"]
+    verified: true
+
+  - type: "newsletter"
+    newsletters: ["Pokemon Trainer Club Newsletter"]
+    notes: "Official newsletter via Pokemon Trainer Club; email-based"
+
+status: "needs_verification"
+notes: |
+  Pokemon's information ecosystem is distributed:
+  - pokemon.gamespress.com (international press site â€” CONFIRMED)
+  - press.pokemon.com (North America press site â€” CONFIRMED)
+  - pokemongolive.com (Pokemon GO-specific blog)
+  - nintendo.com (first-party game announcements)
+  - Serebii.net is the UNOFFICIAL but extremely reliable specialist source
+  Pokemon Presents video presentations are major news events.
+  TheSilphRoad subreddit is the best source for Pokemon GO datamines.
+  Must verify: RSS availability on press sites and pokemongolive.com.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

@@ -1,0 +1,102 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Tesla
+
+topic: "Tesla"
+description: "Tesla vehicle updates, FSD, energy products, earnings, Elon Musk statements"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "Tesla, Inc."
+source_types_to_discover:
+  - type: "official_blog"
+    search_queries: ["Tesla blog RSS"]
+    expected_url_pattern: "tesla.com/blog"
+    notes: "Tesla has a blog at /blog; RSS availability unknown â€” verify"
+
+  - type: "news_releases"
+    search_queries: ["Tesla news releases RSS", "Tesla IR RSS"]
+    expected_url_pattern: "ir.tesla.com"
+    notes: "Investor relations page; may have RSS or email alerts"
+
+  - type: "investor_relations"
+    expected_url_pattern: "ir.tesla.com/news"
+    search_queries: ["Tesla investor relations news"]
+    notes: "Earnings calls, shareholder letters, SEC filings"
+
+  - type: "youtube"
+    channels: ["Tesla"]
+    verified: true
+
+  - type: "twitter/x"
+    handles: ["@Tesla", "@ElonMusk"]
+    verified: true
+    notes: "Elon Musk's personal account often has Tesla news before official channels"
+
+  - type: "github_releases"
+    repos: ["teslamotors"]
+    expected_url_pattern: "github.com/teslamotors"
+    notes: "Tesla has some open-source projects; not a primary news source"
+
+  - type: "news_outlets"
+    outlets: ["Electrek Tesla", "Teslarati", "InsideEVs Tesla", "Not a Tesla App"]
+    rss_feeds: ["electrek.co/guides/tesla/feed", "teslarati.com/feed"]
+    verified: true
+    notes: "Third-party Tesla press; Electrek and Teslarati are primary specialist sources"
+
+  - type: "reddit_community"
+    subreddits: ["r/teslamotors", "r/TeslaLounge"]
+    rss_available: true
+
+  - type: "software_update_tracker"
+    source: "Not a Tesla App"
+    url: "notateslaapp.com"
+    rss_feed: "notateslaapp.com/rss"
+    verified: true
+    notes: "Excellent third-party tracker for Tesla software updates and release notes"
+
+  - type: "newsletter"
+    newsletters: ["Electrek Daily"]
+    notes: "Electrek has a daily newsletter with Tesla coverage"
+
+status: "needs_verification"
+notes: |
+  Tesla does NOT have a strong first-party RSS ecosystem:
+  - /blog exists but RSS is unconfirmed
+  - IR site (ir.tesla.com) has news but may not have RSS
+  - Primary news flow is via X/Twitter (@Tesla and @ElonMusk)
+  - Third-party sources (Electrek, Teslarati, Not a Tesla App) are ESSENTIAL
+    for comprehensive Tesla coverage â€” they often break news first.
+  Not a Tesla App (notateslaapp.com) has RSS and tracks software updates.
+  Must verify: tesla.com/blog RSS, ir.tesla.com RSS availability.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

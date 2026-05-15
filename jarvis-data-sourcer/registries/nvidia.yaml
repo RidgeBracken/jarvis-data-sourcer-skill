@@ -1,0 +1,112 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: Nvidia
+
+topic: "Nvidia"
+description: "Nvidia GPU releases, AI hardware, data center products, GTC announcements, DLSS, drivers"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "NVIDIA Corporation"
+source_types_to_discover:
+  - type: "official_blog"
+    search_queries: ["Nvidia blog RSS"]
+    expected_url_pattern: "blogs.nvidia.com"
+    rss_feed: "feeds.feedburner.com/nvidiablog"
+    verified: true
+    notes: "Main NVIDIA blog uses FeedBurner; confirmed active"
+
+  - type: "newsroom"
+    search_queries: ["Nvidia newsroom RSS"]
+    expected_url_pattern: "nvidianews.nvidia.com"
+    rss_feed: "nvidianews.nvidia.com/rss.xml"
+    verified: true
+    notes: "Press releases/newsroom with dedicated RSS"
+
+  - type: "developer_blog"
+    search_queries: ["Nvidia developer blog RSS"]
+    expected_url_pattern: "developer.nvidia.com/blog"
+    rss_feed: "developer.nvidia.com/blog/feed"
+    verified: true
+    notes: "Developer-focused technical blog with RSS"
+
+  - type: "changelog"
+    expected_url_pattern: "nvidia.com/drivers"
+    search_queries: ["Nvidia driver release notes", "Nvidia DLSS changelog"]
+    notes: "Driver release notes; may not have RSS"
+
+  - type: "github_releases"
+    repos: ["NVIDIA/cuda-samples", "NVIDIA/TensorRT"]
+    expected_url_pattern: "github.com/NVIDIA"
+    verified: true
+
+  - type: "youtube"
+    channels: ["NVIDIA", "NVIDIA Developers"]
+    verified: true
+
+  - type: "twitter/x"
+    handles: ["@NVIDIA", "@NVIDIAAI", "@NVIDIAGeForce"]
+    verified: true
+
+  - type: "rss_feeds_directory"
+    url: "nvidia.com/en-us/about-nvidia/rss"
+    verified: true
+    notes: "NVIDIA maintains an RSS directory page listing all their feeds (press room, blog, developer blog)"
+
+  - type: "news_outlets"
+    outlets: ["Tom's Hardware Nvidia", "AnandTech", "VideoCardz", "Wccftech"]
+    rss_feeds: ["tomshardware.com/news/nvidia/rss"]
+
+  - type: "reddit_community"
+    subreddits: ["r/nvidia", "r/NVIDIAHelp"]
+    rss_available: true
+
+  - type: "investor_relations"
+    expected_url_pattern: "investor.nvidia.com"
+    search_queries: ["Nvidia investor relations RSS"]
+    notes: "Earnings calls, financial results; may have RSS or email alerts"
+
+  - type: "newsletter"
+    newsletters: ["NVIDIA AI Newsletter"]
+    notes: "Nvidia may offer newsletter subscriptions"
+
+status: "partially_verified"
+notes: |
+  NVIDIA has an exceptionally well-organised RSS ecosystem:
+  - Main blog: feeds.feedburner.com/nvidiablog (CONFIRMED)
+  - Press room: nvidianews.nvidia.com/rss.xml (CONFIRMED)
+  - Developer blog: developer.nvidia.com/blog/feed (CONFIRMED)
+  - RSS directory page: nvidia.com/en-us/about-nvidia/rss (CONFIRMED)
+  Multiple YouTube channels and Twitter accounts for different product lines.
+  GitHub org "NVIDIA" confirmed with many public repos.
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []

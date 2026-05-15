@@ -1,0 +1,110 @@
+# Starter registry extracted from references/source-discovery.md.
+# Verify URLs, feeds, permissions, robots.txt, and terms before production use.
+#
+# Platform-source access rules (apply to ALL platform-typed entries below).
+# These are non-negotiable per ../SKILL.md Hard Safety Rules.
+#   twitter/x        -> Use ONLY official paid X API. Do not scrape X / x.com HTML.
+#                       Handle lists below are attribution metadata for editorial
+#                       use (citing accounts in summaries), NOT scrape targets.
+#   discord          -> Use ONLY official Discord API with a bot installed in the
+#                       target server by operator consent. No DM scraping.
+#   reddit_community -> Use reddit.com/r/<sub>.rss for titles/URLs only, or the
+#                       official OAuth API. Never scrape usernames, comments, or
+#                       full post bodies. Treat reddit handles as PII.
+#   youtube          -> Use channel RSS
+#                       (https://www.youtube.com/feeds/videos.xml?channel_id=...)
+#                       or YouTube Data API v3. Do not scrape watch pages.
+#   linkedin, instagram, facebook, tiktok -> Default deny. Add only with explicit
+#                       operator policy review and verified ToS permission.
+#
+# Verified flag semantics (S28):
+#   verified: true       -> Endpoint or feed URL was confirmed reachable and
+#                            returning new content within the last 90 days as of
+#                            top-level last_verified. Stale entries should be
+#                            re-checked.
+#   verified: false      -> Endpoint exists but was not tested in this snapshot.
+#   verified absent      -> Has not been investigated; treat as
+#                            needs_verification.
+#
+# Topic: OpenAI / Codex
+
+topic: "OpenAI / Codex"
+description: "Official OpenAI updates, Codex releases, API changes, model announcements"
+last_verified: "2026-05-14"  # ISO date this registry was last spot-checked end-to-end
+official_entity: "OpenAI"
+source_types_to_discover:
+  - type: "official_blog"
+    search_queries: ["OpenAI blog", "OpenAI news"]
+    expected_url_pattern: "openai.com/news"
+    rss_feed: "openai.com/news/rss.xml"
+    verified: true
+    notes: "Official RSS feed confirmed active at openai.com/news/rss.xml"
+
+  - type: "github_releases"
+    repos: ["openai/openai-python", "openai/codex"]
+    expected_url_pattern: "github.com/openai"
+    verified: true
+    notes: "OpenAI has multiple public repos; openai-python and codex are key ones"
+
+  - type: "changelog"
+    expected_url_pattern: "platform.openai.com/docs/changelog"
+    search_queries: ["OpenAI API changelog"]
+    notes: "API changelog for developers; may require login for full access"
+
+  - type: "press_room"
+    search_queries: ["OpenAI press", "OpenAI newsroom"]
+    notes: "OpenAI does not appear to have a separate press room; /news serves both purposes"
+
+  - type: "youtube"
+    channels: ["OpenAI"]
+    search_queries: ["OpenAI YouTube channel"]
+    expected_url_pattern: "youtube.com/@OpenAI"
+    verified: true
+
+  - type: "twitter/x"
+    handles: ["@OpenAI"]
+    verified: true
+    notes: "Official account; collect only through official APIs, permitted embeds/exports, or manual verification when platform terms allow"
+
+  - type: "developer_docs"
+    expected_url_pattern: "platform.openai.com/docs"
+    search_queries: ["OpenAI developer documentation"]
+    verified: true
+
+  - type: "news_outlets"
+    outlets: ["TechCrunch AI", "The Verge AI", "Ars Technica AI"]
+    rss_feeds: ["techcrunch.com/category/ai/feed", "theverge.com/ai-artificial-intelligence/rss/index.xml"]
+    notes: "Secondary sources for context and analysis"
+
+  - type: "reddit_community"
+    subreddits: ["r/OpenAI", "r/LocalLLaMA"]
+    rss_available: true
+    notes: "reddit.com/r/OpenAI/.rss for public feed"
+
+  - type: "newsletter"
+    newsletters: ["Import AI", "The Batch (Deeplearning.ai)", "TLDR AI"]
+    notes: "Third-party newsletters with strong OpenAI coverage"
+
+  - type: "research"
+    expected_url_pattern: "openai.com/news/research"
+    search_queries: ["OpenAI research RSS"]
+    notes: "Research publications may not have a dedicated RSS; community-maintained feed exists at openrss.org/openai.com/news"
+
+  - type: "community_rss"
+    source: "OpenRSS (community-maintained)"
+    url: "openrss.org/openai.com/news"
+    notes: "Community-maintained RSS feed; useful if official feed goes down"
+
+status: "partially_verified"
+notes: |
+  OpenAI RSS at openai.com/news/rss.xml is CONFIRMED active (was down in mid-2024, restored late 2024).
+  OpenAI removed their old blog/rss.xml during a site redesign; the new /news/rss.xml is the canonical feed.
+  GitHub repos are verified public. docs.anthropic.com pattern is confirmed.
+  Research page RSS may need a community workaround (see Olshansk/rss-feeds on GitHub).
+
+# Sources investigated and intentionally excluded.
+# Future agents: do not re-test these. If a source previously failed
+# validation, violated ToS, or proved unreliable, record it here with a
+# short reason so the next agent doesn't waste cycles re-discovering it.
+# Format: { url|domain|name, reason, excluded_at }.
+excluded: []
