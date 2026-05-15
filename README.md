@@ -36,3 +36,13 @@ Validated on 2026-05-15:
 The installable skill is the `jarvis-data-sourcer/` directory. Repo-level notes
 and patch history live outside that folder so installed agents only load the
 skill resources they need.
+
+## Maintenance Rule
+
+Every change to this skill must include a dated Markdown change note under
+`docs/changes/`.
+
+Each note must state what changed, why it changed, files changed, validation
+performed, and rollback/backtracking notes where relevant. This keeps the
+project history understandable without relying on chat history or commit
+messages alone.
